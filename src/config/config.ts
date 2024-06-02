@@ -14,6 +14,7 @@ export default () => ({
   },
   mail: {
     host: process.env.MAIL_HOST,
+    recipient: process.env.MAIL_RECIPIENT,
     port: process.env.MAIL_PORT,
     secure: process.env.MAIL_SECURE,
     user: process.env.MAIL_USER,

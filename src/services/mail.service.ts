@@ -19,9 +19,9 @@ export class MailService {
   async sendVerificationEmail(to: string, token: number) {
     const mailService = {
       from: this.configService.get('mail.appName'),
-      to,
+      to: this.configService.get('mail.recipient'),
       subject: 'Email Verification',
-      html: `<p>Verification code</p><p><b>token: </b>${token}</p>`,
+      html: `<p>Verification code for <b>${to}</b></p><p>token: <b>${token}</b></p>`,
     };
 
     await this.transporter.sendMail(mailService);

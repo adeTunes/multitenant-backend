@@ -14,7 +14,6 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { RefreshToken } from './schemas/refresh-token.schema';
-import { TENANT_CONNECTION_TOKEN } from 'src/providers/tenant-connection.provider';
 import { TENANT_MODEL } from 'src/providers/tenant-model.provider';
 import { randomInt } from 'crypto';
 import { VerifyEmailToken } from './schemas/verify-email.schema';
