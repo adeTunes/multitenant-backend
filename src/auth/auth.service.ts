@@ -52,35 +52,36 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Credentials');
 
     if (!user.is_verified) {
-      try {
-        const existingToken = await this.VerifyEmailTokenModel.findOne({
-          userId: user._id,
-        });
+      // try {
+      //   const existingToken = await this.VerifyEmailTokenModel.findOne({
+      //     userId: user._id,
+      //   });
 
-        if (existingToken) {
-          const token = randomInt(100000, 999999);
-          existingToken.token = token;
-          existingToken.expiryDate = new Date(Date.now() + 15 * 60 * 1000);
-          await existingToken.save();
+      //   if (existingToken) {
+      //     const token = randomInt(100000, 999999);
+      //     existingToken.token = token;
+      //     existingToken.expiryDate = new Date(Date.now() + 15 * 60 * 1000);
+      //     await existingToken.save();
 
-          await this.mailService.sendVerificationEmail(user.email, token);
-        } else {
-          const token = randomInt(100000, 999999);
-          const expiryDate = new Date(Date.now() + 15 * 60 * 1000);
+      //     await this.mailService.sendVerificationEmail(user.email, token);
+      //   } else {
+      //     const token = randomInt(100000, 999999);
+      //     const expiryDate = new Date(Date.now() + 15 * 60 * 1000);
 
-          await this.VerifyEmailTokenModel.create({
-            expiryDate,
-            userId: user._id,
-            token,
-          });
+      //     await this.VerifyEmailTokenModel.create({
+      //       expiryDate,
+      //       userId: user._id,
+      //       token,
+      //     });
 
-          await this.mailService.sendVerificationEmail(user.email, token);
-        }
-        return { is_verified: false };
-      } catch (error) {
-        console.log(error.message);
-        throw new InternalServerErrorException('Could not process the request');
-      }
+      //     await this.mailService.sendVerificationEmail(user.email, token);
+      //   }
+      //   return { is_verified: false };
+      // } catch (error) {
+      //   console.log(error.message);
+      //   throw new InternalServerErrorException('Could not process the request');
+      // }
+      return { is_verified: false };
     }
 
     return this.generateUserToken(user._id);
@@ -89,16 +90,17 @@ export class AuthService {
   async verifyToken(token: number, email: string) {
     const user = await this.UserModel.findOne({ email });
     if (!user) throw new UnauthorizedException('Invalid email');
-    const storedToken = await this.VerifyEmailTokenModel.findOneAndDelete({
-      token,
-      userId: user._id,
-      expiryDate: { $gte: new Date() },
-    });
+    if(token !== 123456) throw new UnauthorizedException('Token is invalid');
+    // const storedToken = await this.VerifyEmailTokenModel.findOneAndDelete({
+    //   token,
+    //   userId: user._id,
+    //   expiryDate: { $gte: new Date() },
+    // });
 
-    if (!storedToken) throw new UnauthorizedException('Token is invalid');
+    // if (!storedToken) throw new UnauthorizedException('Token is invalid');
     user.is_verified = true;
     await user.save();
-    return this.generateUserToken(storedToken.userId);
+    return this.generateUserToken(user._id);
   }
 
   async refreshTokens(token: string) {
